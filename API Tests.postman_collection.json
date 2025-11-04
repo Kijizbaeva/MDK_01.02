@@ -1,0 +1,296 @@
+{
+	"info": {
+		"_postman_id": "94cf0c35-6bec-4bc2-b11d-357e2e2db1f6",
+		"name": "API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43128181"
+	},
+	"item": [
+		{
+			"name": "Getting a list of patients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has correct structure\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    \r",
+							"    if (responseData.length > 0) {\r",
+							"        const firstPatient = responseData[0];\r",
+							"        pm.expect(firstPatient).to.have.all.keys('id', 'full_name', 'gender', 'birth_date', 'phone', 'email');\r",
+							"        pm.expect(firstPatient.full_name).to.be.a('string');\r",
+							"        pm.expect(firstPatient.gender).to.be.a('string');\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/patients/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"patients",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Creating a patient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Patient created successfully\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Created patient has correct data\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.full_name).to.eql(\"Смирнов Андрей Иванович\");\r",
+							"    pm.expect(responseData.gender).to.eql(\"М\");\r",
+							"    pm.expect(responseData.email).to.eql(\"smirnov@example.com\");\r",
+							"    pm.expect(responseData.id).to.be.a('number');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"full_name\": \"Смирнов Андрей Иванович\",\r\n    \"gender\": \"М\",\r\n    \"birth_date\": \"2002-01-09\",\r\n    \"phone\": \"+7-999-123-45-67\",\r\n    \"email\": \"smirnov@example.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/patients/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"patients",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting a patient by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Patient data is correct\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.have.all.keys('id', 'full_name', 'gender', 'birth_date', 'phone', 'email');\r",
+							"    pm.expect(responseData.id).to.be.a('number');\r",
+							"    pm.expect(responseData.full_name).to.be.a('string');\r",
+							"    pm.expect(responseData.gender).to.be.oneOf(['М', 'Ж']);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/patients/47",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"patients",
+						"47"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new appointment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Appointment has correct structure\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.have.all.keys('id', 'patient_id', 'doctor_id', 'appointment_date', 'appointment_time', 'status');\r",
+							"    pm.expect(responseData.patient_id).to.be.a('number');\r",
+							"    pm.expect(responseData.doctor_id).to.be.a('number');\r",
+							"    pm.expect(responseData.status).to.be.a('string');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"patient_id\": 1,\r\n    \"doctor_id\": 1, \r\n    \"appointment_date\": \"2024-12-01\",\r\n    \"appointment_time\": \"10:00\",\r\n    \"status\": \"scheduled\",\r\n    \"notes\": \"Тестовый прием\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/appointments/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"appointments",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Updating the appointment status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Appointment updated successfully\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.status).to.eql('completed');\r",
+							"    pm.expect(responseData.id).to.be.a('number');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"status\": \"completed\",\r\n    \"notes\": \"Прием завершен\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/appointments/35",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"appointments",
+						"35"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deleting an appointment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has correct message\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.have.property('message');\r",
+							"    pm.expect(responseData.message).to.be.a('string');\r",
+							"    pm.expect(responseData.message).to.include('deleted');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/appointments/35",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"appointments",
+						"35"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
